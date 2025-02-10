@@ -1,5 +1,5 @@
-FROM alpine:latest AS build
-RUN apk add --no-cache build-base cmake
+FROM gcc:12 AS build
+RUN apt-get update && apt-get install -y cmake
 COPY . /app
 WORKDIR /app
 RUN g++ -o my-app app.cpp -std=c++17 -static -lpthread
