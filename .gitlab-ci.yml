@@ -21,7 +21,7 @@ build_image:
   stage: build
   script:
     - echo "Building Docker image..."
-    - docker build -t $IMAGE_NAME .
+    - docker build -t $IMAGE_NAME app
     - docker save -o $DOCKER_IMAGE_TAR $IMAGE_NAME
   artifacts:
     paths:
