@@ -15,34 +15,14 @@ std::string conn_string = "host=" + std::string(db_host) +
                           " password=" + std::string(db_password) +
                           " dbname=" + std::string(db_name);
 
-void init_db() {
-    try {
-        pqxx::connection conn(conn_string);
-        pqxx::work txn(conn);
-        txn.exec(R"(
-            CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                email VARCHAR(100) UNIQUE NOT NULL
-            );
-        )");
-        txn.commit();
-        std::cout << "Database initialized.\n";
-    } catch (const std::exception &e) {
-        std::cerr << "Database error: " << e.what() << '\n';
-    }
-}
-
 int main() {
-    init_db();
-    
     httplib::Server svr;
 
     // GET /users - Получить всех пользователей
     svr.Get("/users", [](const httplib::Request&, httplib::Response& res) {
         pqxx::connection conn(conn_string);
         pqxx::work txn(conn);
-        pqxx::result users = txn.exec("SELECT id, name, email FROM users");
+        pqxx::result users = txn.exec("SELECT * FROM users");
 
         json response = json::array();
         for (const auto& row : users) {
@@ -76,7 +56,7 @@ int main() {
         int user_id = std::stoi(req.matches[1]);
         pqxx::connection conn(conn_string);
         pqxx::work txn(conn);
-        pqxx::result user = txn.exec_params("SELECT id, name, email FROM users WHERE id = $1", user_id);
+        pqxx::result user = txn.exec_params("SELECT * FROM users WHERE id = $1", user_id);
 
         if (user.empty()) {
             res.status = 404;

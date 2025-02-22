@@ -13,11 +13,24 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  flyway:
+    image: flyway/flyway:latest
+    container_name: flyway
+    depends_on:
+      - db
+    volumes:
+      - ./migrations:/flyway/sql
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/mydatabase
+      FLYWAY_USER: user
+      FLYWAY_PASSWORD: password
+    command: migrate
+
   app:
     image: registry.csc.sibsutis.ru/is142s03/virtualisation:latest
     build: app
     depends_on:
-      - db
+      - flyway
     environment:
       POSTGRES_HOST: db
       POSTGRES_USER: user
