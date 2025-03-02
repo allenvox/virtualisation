@@ -1,11 +1,7 @@
-FROM gcc:12 AS build
-RUN apt-get update && apt-get install -y cmake
-COPY . /app
+FROM python:3.9-slim
 WORKDIR /app
-RUN g++ -o my-app app.cpp -std=c++17 -static -lpthread
-
-FROM alpine:latest
-RUN apk add --no-cache libstdc++
-COPY --from=build /app/my-app /usr/local/bin/my-app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
 EXPOSE 8000
-CMD ["my-app"]
+CMD ["python", "app.py"]

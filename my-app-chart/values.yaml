@@ -1,0 +1,10 @@
+replicaCount: 5
+image:
+  repository: my-app
+  tag: latest
+service:
+  port: 80
+  targetPort: 8000
+ingress:
+  enabled: true
+  host: myapp.local

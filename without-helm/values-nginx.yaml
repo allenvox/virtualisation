@@ -1,0 +1,10 @@
+controller:
+  image:
+    repository: registry.k8s.io/ingress-nginx/controller
+    tag: v1.8.1
+  replicaCount: 1
+  service:
+    type: NodePort
+  ingressClassResource:
+    enabled: true
+    default: true

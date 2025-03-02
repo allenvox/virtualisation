@@ -1,18 +1,19 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-app-ingress
+  name: {{ .Release.Name }}-my-app-ingress
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
+  ingressClassName: traefik
   rules:
-  - host: my-app.local
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: my-app-service
+            name: {{ .Release.Name }}-my-app-service
             port:
-              number: 8000
+              number: {{ .Values.service.port }}
